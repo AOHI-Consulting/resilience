@@ -122,7 +122,7 @@
               var kl = kpiLevel(y.s);
               return '<div class="kpi' + (y.changed ? ' changed' : '') + '"><div class="r1"><span class="nm">' + y.k.name + '</span><span class="v">' + fmt(y.k, y.v) + '</span></div>' +
                 '<div class="bar s-' + kl + '"><i style="width:' + Math.max(2, y.s) + '%"></i></div>' +
-                '<div class="r2"><span class="why">' + y.k.why + '</span></div><div class="r2">' + chip(kl, STATUS[kl].label + ' · ' + target(y.k)) + '</div></div>';
+                '<div class="r2"><span class="why">' + y.k.why + '</span>' + chip(kl, target(y.k)) + '</div></div>';
             }).join('') + '</div>' +
         '</div>' +
       '</div>' +
@@ -131,6 +131,13 @@
         var rl = riskLevel(c.score);
         return '<button class="ch" data-pick="' + c.fn + '"><span class="rank">#' + (i + 1) + '</span><h3>' + c.title + '</h3><p>' + c.why + '</p>' +
           '<div class="ft"><span class="pill fn">' + fnById(c.fn).name + '</span>' + chip(rl, c.score + '/25') + '</div></button>';
+      }).join('') + '</div>' +
+      '<div class="ch-head"><h2>What we would fix first</h2><p>Three actions, in this order. Each one moves a KPI on this dashboard.</p></div>' +
+      '<div class="fixgrid">' + D.fixFirst.map(function (f, i) {
+        return '<div class="card fx"><div class="fx-top"><span class="fx-n">' + (i + 1) + '</span><span class="pill fn">' + fnById(f.fn).name + '</span></div>' +
+          '<h3>' + f.t + '</h3><p>' + f.why + '</p>' +
+          '<div class="fx-m"><div class="fx-l"><span>' + f.metric + '</span><b>' + f.from + '% <span class="muted">→</span> ' + f.to + '%</b></div>' +
+          '<div class="bar s-' + kpiLevel(f.from >= 60 ? 60 : 40) + '"><i style="width:' + f.from + '%"></i><span class="tg" style="left:calc(' + f.to + '% - 2px)"></span></div></div></div>';
       }).join('') + '</div>';
   }
 

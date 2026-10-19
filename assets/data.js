@@ -93,6 +93,16 @@ window.RR = {
       why: 'Not every place where sensitive data is stored has been mapped yet.' }
   ],
 
+  // What we would fix first: three actions, each moving a KPI on the dashboard
+  fixFirst: [
+    { t: 'Test every backup by restoring it', fn: 'recover', metric: 'Critical systems restore-tested', from: 75, to: 100,
+      why: 'Ransomware is our biggest risk, and getting back up is where we are weakest. A backup only counts once it has been restored.' },
+    { t: 'A security check for every key supplier', fn: 'govern', metric: 'Key suppliers with a security review', from: 58, to: 100,
+      why: 'The learning platform, exams and payments all run at suppliers. Every contract gets a “tell us within 24 hours” clause.' },
+    { t: 'One official channel and one clear home page', fn: 'protect', metric: 'Messages through one official channel', from: 64, to: 100,
+      why: 'Fixes the confusing platform. When students know what real looks like, a fake message stands out.' }
+  ],
+
   // Top resilience challenges: likelihood and impact on a 1–5 scale.
   risks: [
     { id: 'R1', cyber: true, title: 'Ransomware locks learning and admin systems', l: 3, i: 5, move: 'up', fix: 'Offline backups, restore tests, network segments' },
