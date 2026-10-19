@@ -4,12 +4,12 @@
 window.RR = {
   // NIST Cybersecurity Framework 2.0: the six functions
   functions: [
-    { id: 'govern', name: 'Govern', q: 'Do we steer cyber risk from the top?' },
-    { id: 'identify', name: 'Identify', q: 'Do we know what we have and what is exposed?' },
-    { id: 'protect', name: 'Protect', q: 'Are the doors locked?' },
-    { id: 'detect', name: 'Detect', q: 'Would we notice an attacker, and how fast?' },
-    { id: 'respond', name: 'Respond', q: 'Can we contain an attack and tell people in time?' },
-    { id: 'recover', name: 'Recover', q: 'Can we get teaching and services back on time?' }
+    { id: 'govern', name: 'Govern', q: 'Do we steer cyber risk from the top?', plain: 'Leadership, rules and suppliers' },
+    { id: 'identify', name: 'Identify', q: 'Do we know what we have and what is exposed?', plain: 'Knowing our systems and data' },
+    { id: 'protect', name: 'Protect', q: 'Are the doors locked?', plain: 'Logins, updates and awareness' },
+    { id: 'detect', name: 'Detect', q: 'Would we notice an attacker, and how fast?', plain: 'Spotting an attack quickly' },
+    { id: 'respond', name: 'Respond', q: 'Can we contain an attack and tell people in time?', plain: 'Stopping the spread, informing people' },
+    { id: 'recover', name: 'Recover', q: 'Can we get teaching and services back on time?', plain: 'Getting classes and services back' }
   ],
 
   kpis: [
@@ -77,6 +77,20 @@ window.RR = {
       note: 'Guest network separated from staff systems.' },
     { name: 'Doors, cameras, building sensors', use: 'Access control, IoT', who: 'Facilities', data: 'Medium', mfa: false, patched: false, review: false, status: 'serious',
       note: 'Ch. 8: smart locks and sensors are computers too. Some still run on factory passwords.' }
+  ],
+
+  // The five biggest cyber challenges for the school, in plain language (score = likelihood × impact, out of 25)
+  challenges: [
+    { title: 'Ransomware locks our systems', fn: 'recover', score: 15,
+      why: 'Not every backup has been tested by restoring it. Getting back up is our weakest point.' },
+    { title: 'Stolen student and staff logins', fn: 'protect', score: 15,
+      why: '9% of people click a fake phishing mail. Among first-years it is 14%.' },
+    { title: 'A confusing platform makes fakes look real', fn: 'govern', score: 12,
+      why: 'Students struggle to find their way on MyHotelschool, so a fake login page is hard to spot.' },
+    { title: 'A supplier gets hacked', fn: 'govern', score: 12,
+      why: 'Only 58% of key suppliers (learning platform, exams, payments) have had a security check.' },
+    { title: 'Passport copies and grades leak', fn: 'identify', score: 10,
+      why: 'Not every place where sensitive data is stored has been mapped yet.' }
   ],
 
   // Top resilience challenges: likelihood and impact on a 1–5 scale.

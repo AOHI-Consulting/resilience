@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Resilience Room</title>
-<meta name="description" content="Student demo: a cyber resilience dashboard to track and trace resilience KPIs for a hotel school. Demo data.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0e14'/%3E%3Cpath d='M16 5l9 3.6v6.2c0 5.6-3.8 10.4-9 12.2-5.2-1.8-9-6.6-9-12.2V8.6z' fill='none' stroke='%234d8eff' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M10.5 16h3l1.8-3.6 2.6 6.4 1.6-2.8h2' fill='none' stroke='%234d8eff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="description" content="Student demo: a cyber resilience dashboard for a hotel school, built on the NIST Cybersecurity Framework 2.0. Demo data.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0e14'/%3E%3Cpath d='M16 5l9 3.6v6.2c0 5.6-3.8 10.4-9 12.2-5.2-1.8-9-6.6-9-12.2V8.6z' fill='none' stroke='%234d8eff' stroke-width='2.4' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,56 +13,39 @@
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<div class="app">
 
-  <aside class="side" id="side">
-    <a class="logo" href="#command">
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="#overview">
       <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4l10 4v7c0 6.2-4.2 11.5-10 13.5C10.2 26.5 6 21.2 6 15V8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M10.5 16h3l1.8-3.6 2.6 6.4 1.6-2.8h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span><b>Resilience Room</b><small>Hotelschool · cyber first</small></span>
+      <span><b>Resilience Room</b><small>Cyber resilience of the Hotelschool</small></span>
     </a>
-    <nav id="nav" aria-label="Pages"></nav>
-    <div class="side-foot">
-      <div class="threat" id="threat"></div>
-      <p class="hint"><kbd>←</kbd> <kbd>→</kbd> move between pages</p>
-      <p class="demo">Student demo · all numbers are demo data</p>
+    <nav class="tabs" id="tabs" aria-label="Pages">
+      <a href="#overview" data-t="overview"><i>1</i>Overview</a>
+      <a href="#simulate" data-t="simulate"><i>2</i>Simulate<span class="xl"> an attack</span></a>
+      <a href="#incidents" data-t="incidents"><i>3</i>Incidents</a>
+      <a href="#live" data-t="live"><i>4</i>Live quiz<span class="count" id="liveCount"></span></a>
+    </nav>
+    <div class="tools">
+      <span class="clock"><i class="live-dot"></i><span id="clock" class="mono">--:--</span></span>
+      <button class="icon-btn" id="themeBtn" title="Light or dark" aria-label="Switch light or dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
     </div>
-  </aside>
-
-  <div class="main">
-    <header class="bar">
-      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-      <div class="bar-title">
-        <span class="crumb" id="crumb"></span>
-        <h1 id="viewTitle"></h1>
-      </div>
-      <div class="bar-tools">
-        <div class="seg" id="rangeSeg" role="group" aria-label="Period">
-          <button data-v="7d">7D</button><button data-v="30d">30D</button><button data-v="90d">90D</button><button data-v="12m">12M</button>
-        </div>
-        <span class="clock"><i class="live-dot"></i><span id="clock" class="mono">--:--</span></span>
-        <button class="icon-btn" id="fsBtn" title="Full screen" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
-        <button class="icon-btn" id="themeBtn" title="Light or dark" aria-label="Switch light or dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
-      </div>
-    </header>
-
-    <div class="simbar" id="simbar" hidden></div>
-
-    <main class="views" id="views">
-      <section class="view" id="v-command"></section>
-      <section class="view" id="v-challenges"></section>
-      <section class="view" id="v-defences"></section>
-      <section class="view" id="v-surface"></section>
-      <section class="view" id="v-trace"></section>
-      <section class="view" id="v-simulator"></section>
-      <section class="view" id="v-human"></section>
-      <section class="view" id="v-live"></section>
-      <section class="view" id="v-wider"></section>
-      <section class="view" id="v-marriott"></section>
-      <section class="view" id="v-about"></section>
-    </main>
   </div>
-</div>
-<div class="scrim" id="scrim"></div>
+  <div class="simbar" id="simbar" hidden></div>
+</header>
+
+<main class="wrap">
+  <section class="tab" id="t-overview"></section>
+  <section class="tab" id="t-simulate"></section>
+  <section class="tab" id="t-incidents"></section>
+  <section class="tab" id="t-live"></section>
+</main>
+
+<footer class="wrap foot">
+  <p><b>How it works.</b> Built on the <b>NIST Cybersecurity Framework 2.0</b>, the framework security professionals use: six functions, three KPIs each, every KPI with a target. All numbers are <b>demo data</b>, not official Hotelschool figures. Built with Claude (an LLM) for Digital Developments, class 8: the importance of resilience.</p>
+  <p class="keys"><kbd>←</kbd> <kbd>→</kbd> switch tabs · <kbd>F</kbd> full screen</p>
+</footer>
+
 <div class="toast" id="toast" role="status"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
