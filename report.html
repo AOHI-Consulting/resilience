@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Report an issue · Resilience Room</title>
+<meta name="description" content="Report a resilience problem you have run into at school. It appears on the Resilience Room dashboard.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231a1a19'/%3E%3Cpath d='M5 17h5l3-7 5 13 3-6h6' fill='none' stroke='%233987e5' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  .form { max-width: 560px; margin: 0 auto; padding: 20px 16px 48px; }
+  .form header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .form header svg { width: 30px; height: 30px; color: var(--accent); flex: none; }
+  .form h1 { font-size: 20px; }
+  .form .lead { color: var(--ink-2); font-size: 14px; margin-bottom: 18px; }
+  fieldset { border: 0; padding: 0; margin: 0 0 20px; }
+  legend { font-weight: 600; font-size: 15px; margin-bottom: 8px; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .opts.three { grid-template-columns: repeat(3, 1fr); }
+  .opt input { position: absolute; opacity: 0; pointer-events: none; }
+  .opt label {
+    display: flex; flex-direction: column; gap: 3px; min-height: 64px; padding: 11px 12px; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--surface); cursor: pointer; font-size: 14px; font-weight: 600;
+  }
+  .opt label svg { width: 20px; height: 20px; color: var(--ink-2); }
+  .opt label small { font-weight: 400; font-size: 12px; color: var(--ink-2); }
+  .opt input:checked + label { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-wash); }
+  .opt input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .opts.three .opt label { min-height: 48px; justify-content: center; text-align: center; }
+  textarea {
+    width: 100%; min-height: 110px; padding: 12px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--surface); font-size: 16px; resize: vertical;
+  }
+  textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .count { text-align: right; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .send {
+    width: 100%; height: 52px; border: 0; border-radius: 12px; background: var(--accent); color: #fff; font-weight: 600; font-size: 16px;
+  }
+  .send:disabled { opacity: 0.5; cursor: default; }
+  .hint { font-size: 12.5px; color: var(--muted); margin-top: 10px; text-align: center; }
+  .err { color: var(--bad-text); font-size: 13.5px; margin-top: 10px; text-align: center; min-height: 1.4em; }
+  .done { text-align: center; padding: 40px 10px; }
+  .done svg { width: 56px; height: 56px; color: var(--good); }
+  .done h2 { font-size: 22px; margin: 12px 0 6px; }
+  .done p { color: var(--ink-2); }
+  .again { margin-top: 20px; height: 44px; padding: 0 18px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); font-weight: 600; }
+</style>
+</head>
+<body>
+<main class="form">
+  <header>
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="1.5"/><path d="M5 17h5l3-7 5 13 3-6h6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div><h1>Report a resilience issue</h1><p class="muted" style="font-size:12.5px">Resilience Room · student demo</p></div>
+  </header>
+
+  <form id="f" novalidate>
+    <p class="lead">Something at school that broke, stopped you, or almost did? It shows up on the screen in class.</p>
+
+    <fieldset>
+      <legend>Which area?</legend>
+      <div class="opts" id="pillarOpts"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Which campus?</legend>
+      <div class="opts three">
+        <div class="opt"><input type="radio" name="campus" id="c1" value="The Hague"><label for="c1">The Hague</label></div>
+        <div class="opt"><input type="radio" name="campus" id="c2" value="Amsterdam"><label for="c2">Amsterdam</label></div>
+        <div class="opt"><input type="radio" name="campus" id="c3" value="Both" checked><label for="c3">Both</label></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>How bad was it?</legend>
+      <div class="opts three">
+        <div class="opt"><input type="radio" name="sev" id="s1" value="1"><label for="s1">Annoying</label></div>
+        <div class="opt"><input type="radio" name="sev" id="s2" value="2" checked><label for="s2">Disruptive</label></div>
+        <div class="opt"><input type="radio" name="sev" id="s3" value="3"><label for="s3">Stopped me</label></div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend><label for="note">What happened?</label></legend>
+      <textarea id="note" maxlength="240" placeholder="For example: MyHotelschool logged me out in the middle of a quiz"></textarea>
+      <div class="count"><span id="cnt">0</span>/240</div>
+    </fieldset>
+
+    <button class="send" id="send" type="submit">Send to the screen</button>
+    <p class="err" id="err" role="alert"></p>
+    <p class="hint">Anonymous. Please leave out names and personal details.</p>
+  </form>
+
+  <div class="done" id="done" hidden>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6.5"/></svg>
+    <h2>Sent. Look at the screen.</h2>
+    <p>Your report is on the dashboard now.</p>
+    <button class="again" id="again" type="button">Report another</button>
+  </div>
+</main>
+
+<script src="assets/data.js"></script>
+<script>
+(function () {
+  var CLOUD = { rpc: 'https://fziyuauwrfdmiomwelij.supabase.co/rest/v1/rpc/', key: 'sb_publishable_ADg1MNwF3XHtn0bdRYv8cw_NfdZomZ6' };
+  var HINTS = {
+    cyber: 'Phishing, passwords, data',
+    learning: 'Sakai, exams, Wi-Fi, login',
+    campus: 'Rooms, kitchens, outlets',
+    people: 'Staff, cover, wellbeing',
+    finance: 'Costs, fees, intake',
+    reputation: 'Trust, reviews, image'
+  };
+  var ICON = {
+    cyber: '<path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/>',
+    learning: '<rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/>',
+    campus: '<path d="M4 21V6l8-3 8 3v15"/><path d="M9 21v-5h6v5M8 9h1M15 9h1M8 13h1M15 13h1"/>',
+    people: '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c2.8 0 5 2.2 5 5"/>',
+    finance: '<ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6"/><path d="M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/>',
+    reputation: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>'
+  };
+  var $ = function (id) { return document.getElementById(id); };
+  $('pillarOpts').innerHTML = window.RR.pillars.map(function (p, i) {
+    return '<div class="opt"><input type="radio" name="pillar" id="p' + i + '" value="' + p.id + '"><label for="p' + i + '">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICON[p.id] + '</svg>' +
+      p.name + '<small>' + HINTS[p.id] + '</small></label></div>';
+  }).join('');
+
+  var note = $('note');
+  note.addEventListener('input', function () { $('cnt').textContent = note.value.length; });
+
+  function val(name) { var c = document.querySelector('input[name="' + name + '"]:checked'); return c ? c.value : null; }
+
+  $('f').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var err = $('err');
+    err.textContent = '';
+    var pillar = val('pillar');
+    if (!pillar) { err.textContent = 'Pick an area first.'; return; }
+    if (note.value.trim().length < 3) { err.textContent = 'Write a few words about what happened.'; note.focus(); return; }
+    var btn = $('send');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    fetch(CLOUD.rpc + 'resilience_report', {
+      method: 'POST',
+      headers: { apikey: CLOUD.key, Authorization: 'Bearer ' + CLOUD.key, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_pillar: pillar, p_campus: val('campus'), p_severity: Number(val('sev')), p_note: note.value.trim() })
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (j) { throw new Error(j && j.message || 'Error ' + r.status); });
+      $('f').hidden = true; $('done').hidden = false;
+    }).catch(function (x) {
+      err.textContent = 'Could not send: ' + (x.message || x) + '. Try again.';
+    }).then(function () {
+      btn.disabled = false; btn.textContent = 'Send to the screen';
+    });
+  });
+
+  $('again').addEventListener('click', function () {
+    note.value = ''; $('cnt').textContent = '0';
+    $('done').hidden = true; $('f').hidden = false;
+    window.scrollTo(0, 0);
+  });
+})();
+</script>
+</body>
+</html>
