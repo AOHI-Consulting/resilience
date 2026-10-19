@@ -4,201 +4,65 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Resilience Room</title>
-<meta name="description" content="Student demo: a dashboard to track and trace resilience KPIs for a hotel school. Demo data.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231a1a19'/%3E%3Cpath d='M5 17h5l3-7 5 13 3-6h6' fill='none' stroke='%233987e5' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="description" content="Student demo: a cyber resilience dashboard to track and trace resilience KPIs for a hotel school. Demo data.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0e14'/%3E%3Cpath d='M16 5l9 3.6v6.2c0 5.6-3.8 10.4-9 12.2-5.2-1.8-9-6.6-9-12.2V8.6z' fill='none' stroke='%234d8eff' stroke-width='2.4' stroke-linejoin='round'/%3E%3Cpath d='M10.5 16h3l1.8-3.6 2.6 6.4 1.6-2.8h2' fill='none' stroke='%234d8eff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script>try { var t = localStorage.getItem('rr-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}</script>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
+<div class="app">
 
-<header class="top">
-  <div class="wrap">
-    <div class="brand">
-      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="8" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="1.5"/><path d="M5 17h5l3-7 5 13 3-6h6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div>
-        <h1>Resilience Room</h1>
-        <p>Track &amp; trace of resilience KPIs for the Hotelschool</p>
-      </div>
+  <aside class="side" id="side">
+    <a class="logo" href="#command">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4l10 4v7c0 6.2-4.2 11.5-10 13.5C10.2 26.5 6 21.2 6 15V8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M10.5 16h3l1.8-3.6 2.6 6.4 1.6-2.8h2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span><b>Resilience Room</b><small>Hotelschool · cyber first</small></span>
+    </a>
+    <nav id="nav" aria-label="Pages"></nav>
+    <div class="side-foot">
+      <div class="threat" id="threat"></div>
+      <p class="hint"><kbd>←</kbd> <kbd>→</kbd> move between pages</p>
+      <p class="demo">Student demo · all numbers are demo data</p>
     </div>
-    <span class="demo-tag" title="All numbers are realistic demo values, not official school data">Student demo · demo data</span>
-    <span class="clock"><span class="pulse-dot" id="liveDot"></span><span id="clock" class="mono">--:--:--</span></span>
-    <button class="icon-btn" id="fsBtn" title="Full screen" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
-    <button class="icon-btn" id="themeBtn" title="Light or dark" aria-label="Switch light or dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></button>
+  </aside>
+
+  <div class="main">
+    <header class="bar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div class="bar-title">
+        <span class="crumb" id="crumb"></span>
+        <h1 id="viewTitle"></h1>
+      </div>
+      <div class="bar-tools">
+        <div class="seg" id="rangeSeg" role="group" aria-label="Period">
+          <button data-v="7d">7D</button><button data-v="30d">30D</button><button data-v="90d">90D</button><button data-v="12m">12M</button>
+        </div>
+        <span class="clock"><i class="live-dot"></i><span id="clock" class="mono">--:--</span></span>
+        <button class="icon-btn" id="fsBtn" title="Full screen" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        <button class="icon-btn" id="themeBtn" title="Light or dark" aria-label="Switch light or dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+      </div>
+    </header>
+
+    <div class="simbar" id="simbar" hidden></div>
+
+    <main class="views" id="views">
+      <section class="view" id="v-command"></section>
+      <section class="view" id="v-challenges"></section>
+      <section class="view" id="v-defences"></section>
+      <section class="view" id="v-surface"></section>
+      <section class="view" id="v-trace"></section>
+      <section class="view" id="v-simulator"></section>
+      <section class="view" id="v-human"></section>
+      <section class="view" id="v-live"></section>
+      <section class="view" id="v-wider"></section>
+      <section class="view" id="v-marriott"></section>
+      <section class="view" id="v-about"></section>
+    </main>
   </div>
-  <nav class="subnav wrap" aria-label="Sections">
-    <a href="#overview">Overview</a>
-    <a href="#stress">Stress test</a>
-    <a href="#challenges">Challenges</a>
-    <a href="#trace">Track &amp; trace</a>
-    <a href="#kpis">All KPIs</a>
-    <a href="#live">Live from the room</a>
-    <a href="#marriott">Lessons from Marriott</a>
-    <a href="#about">How it works</a>
-  </nav>
-</header>
-
-<main class="wrap">
-
-  <div class="filters" role="group" aria-label="Filters">
-    <div><span class="filter-label">Period</span>
-      <div class="seg" id="rangeSeg">
-        <button data-v="7d">7 days</button><button data-v="30d">30 days</button><button data-v="90d">90 days</button><button data-v="12m">12 months</button>
-      </div>
-    </div>
-    <div><span class="filter-label">Campus</span>
-      <div class="seg" id="campusSeg">
-        <button data-v="All">Both</button><button data-v="The Hague">The Hague</button><button data-v="Amsterdam">Amsterdam</button>
-      </div>
-    </div>
-    <p class="note">Period and campus apply to the KPIs, incidents and live reports.</p>
-  </div>
-
-  <!-- Overview -->
-  <section class="block" id="overview">
-    <div class="overview">
-      <div class="card hero">
-        <div>
-          <h2 style="font-size:15px">Resilience index</h2>
-          <p class="sub">Average of six areas, each scored 0–100 against its targets</p>
-        </div>
-        <div class="hero-top">
-          <div class="hero-num" id="heroNum">--<small>/100</small></div>
-          <div class="hero-meta">
-            <span id="heroStatus"></span>
-            <span class="delta" id="heroDelta"></span>
-          </div>
-        </div>
-        <p class="read" id="heroRead"></p>
-        <div class="chart-box" id="indexChart"></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-          <span class="muted" style="font-size:12px" id="indexCaption"></span>
-          <button class="table-toggle" id="indexTableBtn" aria-expanded="false">View as table</button>
-        </div>
-        <div id="indexTable" hidden></div>
-      </div>
-      <div class="pillars" id="pillars"></div>
-    </div>
-  </section>
-
-  <!-- Stress test -->
-  <section class="block" id="stress">
-    <div class="section-head">
-      <span class="num">01</span><h2>Stress test</h2>
-      <p>Press a scenario and watch what breaks, how the index moves, and whether we recover within target.</p>
-      <button class="icon-btn reset" id="resetBtn" hidden>End the test</button>
-    </div>
-    <div class="scenarios" id="scenarios"></div>
-    <div class="sim" id="sim" aria-live="polite"></div>
-  </section>
-
-  <!-- Challenges + Track & trace -->
-    <section class="block" id="challenges">
-      <div class="section-head"><span class="num">02</span><h2>Top resilience challenges</h2><p>What could hit the school, scored on likelihood × impact. Click a number.</p></div>
-      <div class="card split">
-       <div>
-        <div class="matrix-wrap">
-          <div class="matrix-y">Impact →</div>
-          <div>
-            <div class="matrix" id="matrix"></div>
-            <div class="matrix-x"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
-            <div class="matrix-xl">Likelihood →</div>
-          </div>
-        </div>
-        <div class="legend">
-          <span><i style="background:color-mix(in srgb,var(--good) 30%,var(--surface))"></i>Low (1–4)</span>
-          <span><i style="background:color-mix(in srgb,var(--warning) 40%,var(--surface))"></i>Medium (5–9)</span>
-          <span><i style="background:color-mix(in srgb,var(--serious) 50%,var(--surface))"></i>High (10–14)</span>
-          <span><i style="background:color-mix(in srgb,var(--critical) 55%,var(--surface))"></i>Critical (15–25)</span>
-        </div>
-       </div>
-        <ol class="risk-list" id="riskList"></ol>
-      </div>
-    </section>
-
-    <section class="block" id="trace">
-      <div class="section-head"><span class="num">03</span><h2>Track &amp; trace</h2><p>Every incident from first signal to lesson learned, timed against its recovery target.</p></div>
-      <div class="card">
-        <div class="stats" id="incStats"></div>
-        <div class="split">
-          <ul class="inc-list" id="incList"></ul>
-          <div class="trace" id="traceDetail"></div>
-        </div>
-      </div>
-    </section>
-
-  <!-- KPI board -->
-  <section class="block" id="kpis">
-    <div class="section-head"><span class="num">04</span><h2>All KPIs</h2><p>24 KPIs, four per area. Click a KPI to see why it matters.</p></div>
-    <div class="kpi-board" id="kpiBoard"></div>
-  </section>
-
-  <!-- Live -->
-  <section class="block" id="live">
-    <div class="section-head"><span class="num">05</span><h2>Live from the room</h2><p>Scan the code and report a resilience problem you have run into at school. It appears here within seconds.</p></div>
-    <div class="live-grid">
-      <div class="card qr-card">
-        <div class="qr" id="qr" aria-label="QR code to the report form"></div>
-        <div>
-          <h3>Report a resilience issue</h3>
-          <p class="qr-url" id="qrUrl"></p>
-        </div>
-      </div>
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:10px">
-          <h3>Latest reports</h3><span class="muted" style="font-size:12px" id="feedState">Connecting…</span>
-        </div>
-        <ul class="feed" id="feed"></ul>
-      </div>
-      <div class="card">
-        <h3>Reports by area</h3>
-        <p class="sub" style="margin-bottom:10px"><span class="big-count" id="feedCount">0</span> reports so far</p>
-        <div class="bars" id="feedBars"></div>
-        <div class="presenter" id="presenter">
-          <label for="pcode">Presenter code</label><input id="pcode" type="password" autocomplete="off" placeholder="to hide posts">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Marriott -->
-  <section class="block" id="marriott">
-    <div class="section-head"><span class="num">06</span><h2>Lessons from Marriott</h2><p>The two cases from class, and the KPIs on this dashboard that would have caught them earlier.</p></div>
-    <div class="cases" id="cases"></div>
-  </section>
-
-  <!-- About -->
-  <section class="block" id="about">
-    <div class="section-head"><span class="num">07</span><h2>How it works</h2></div>
-    <div class="about">
-      <div class="card">
-        <h3>The resilience cycle behind the dashboard</h3>
-        <ol>
-          <li><b>Anticipate</b>: the top challenges and their likelihood × impact.</li>
-          <li><b>Monitor</b>: 24 KPIs with a target, an owner and a trend.</li>
-          <li><b>Respond</b>: track &amp; trace every incident, timed against a recovery target.</li>
-          <li><b>Learn</b>: every incident ends with a lesson, and often a new KPI.</li>
-          <li><b>Rehearse</b>: stress tests show weak spots before a real crisis does.</li>
-        </ol>
-      </div>
-      <div class="card">
-        <h3>Where the data would come from</h3>
-        <ul id="sources"></ul>
-      </div>
-      <div class="card">
-        <h3>Built with an LLM</h3>
-        <ul>
-          <li>Built with Claude (Anthropic) for the LDD class on resilience, within the 2-hour limit.</li>
-          <li>Steps: brief → resilience challenges → KPIs and targets → page → live test.</li>
-          <li>Plain HTML, CSS and JavaScript. Live reports run on a free Supabase database.</li>
-          <li><b>All KPI values are demo data</b>, chosen to be realistic. They are not official Hotelschool figures.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer class="wrap">Resilience Room · student demo for Digital Developments, class 8 “The importance of resilience” · demo data</footer>
-
+</div>
+<div class="scrim" id="scrim"></div>
 <div class="toast" id="toast" role="status"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>

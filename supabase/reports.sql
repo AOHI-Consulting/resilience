@@ -53,3 +53,34 @@ revoke all on function public.resilience_hide(text, uuid) from public;
 grant execute on function public.resilience_report(text, text, int, text) to anon, authenticated;
 grant execute on function public.resilience_feed() to anon, authenticated;
 grant execute on function public.resilience_hide(text, uuid) to anon, authenticated;
+
+-- "Spot the phish" quiz (added 19 Oct): one row per phone, q1..q3 = answered correctly.
+create table if not exists public.resilience_quiz (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  q1 boolean not null, q2 boolean not null, q3 boolean not null
+);
+alter table public.resilience_quiz enable row level security;
+
+create or replace function public.resilience_quiz_submit(p_q1 boolean, p_q2 boolean, p_q3 boolean)
+returns uuid language plpgsql security definer set search_path = public as $$
+declare v_id uuid;
+begin
+  if p_q1 is null or p_q2 is null or p_q3 is null then raise exception 'missing answer'; end if;
+  if (select count(*) from resilience_quiz) >= 3000 then raise exception 'quiz store is full'; end if;
+  insert into resilience_quiz (q1, q2, q3) values (p_q1, p_q2, p_q3) returning id into v_id;
+  return v_id;
+end $$;
+
+create or replace function public.resilience_quiz_results()
+returns table (n bigint, q1 bigint, q2 bigint, q3 bigint, all3 bigint)
+language sql security definer set search_path = public as $$
+  select count(*), count(*) filter (where q1), count(*) filter (where q2), count(*) filter (where q3),
+         count(*) filter (where q1 and q2 and q3)
+  from resilience_quiz;
+$$;
+
+revoke all on function public.resilience_quiz_submit(boolean, boolean, boolean) from public;
+revoke all on function public.resilience_quiz_results() from public;
+grant execute on function public.resilience_quiz_submit(boolean, boolean, boolean) to anon, authenticated;
+grant execute on function public.resilience_quiz_results() to anon, authenticated;
